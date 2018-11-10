@@ -7,7 +7,6 @@ const country = 'Belarus';
 
 axios.get(url + `population/${year}/${country}/`)
     .then(function (response) {
-        // handle success
         const population = response.data;
         let allPopulation = 0;
         for (let someAged of population) {
@@ -18,7 +17,6 @@ axios.get(url + `population/${year}/${country}/`)
         console.log(`Population of Belarus is ${allPopulation}`);
     })
     .catch(function (error) {
-        // handle error
         console.log(error);
     })
 
@@ -128,17 +126,17 @@ axios.get(url + 'countries').then(results => {
     for (let i = 0; i < 5; i++) {
         countries.push(url + `population/${yearA}/${allCountries[i]}/`);
     }
-    console.log();
-    console.log("Promise.map");
-    Promise.map(axios.get(countries)).then(result => {
-        const population = results;
-        for (let someCountry of population) {
+    Promise.map(countries, (country) => axios.get(country)).then(result => {
+        console.log();
+        console.log("Promise.map");
+        for (let someCountry of result) {
             let totalPopulation = 0;
-            const countryPopulation = someCountry.data;  
+            const countryPopulation = someCountry.data;
             for (let someAged of countryPopulation) {
                 totalPopulation += someAged.total;
             }
-            console.log(`Population of ${someCountry.country} is ${totalPopulation}`);
+            const country = countryPopulation[0].country;
+            console.log(`Population of ${country} is ${totalPopulation}`);
         }
     })
 })
